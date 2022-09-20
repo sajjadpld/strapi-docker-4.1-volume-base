@@ -1,0 +1,42 @@
+version: "3.9"
+services:
+  #Strapi Service (APP Service)
+  strapi_app:
+    volumes:
+      - ./app:/opt/app
+    build:
+      context: .
+    depends_on:
+      - strapi_db
+    ports:
+      - "80:1332"
+    environment:
+      - DATABASE_CLIENT=postgres
+      - DATABASE_HOST=strapi_db
+      - DATABASE_PORT=5432
+      - DATABASE_NAME=strapi_db
+      - DATABASE_USERNAME=strapi_db
+      - DATABASE_PASSWORD=strapi_db
+      - DATABASE_SSL=false
+    networks:
+      - app-network
+
+  #PostgreSQL Service
+  strapi_db:
+    image: postgres
+    container_name: strapi_db
+    environment:
+      POSTGRES_USER: strapi_db
+      POSTGRES_PASSWORD: strapi_db
+      POSTGRES_DB: strapi_db
+    ports:
+      - '5432:5432'
+    volumes:
+      - ./dbdata:/var/lib/postgresql/data
+    networks:
+      - app-network
+
+#Docker Networks
+networks:
+  app-network:
+    driver: bridge
